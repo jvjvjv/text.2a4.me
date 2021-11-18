@@ -1,138 +1,16 @@
-<!doctype html>
-<html>
-<head>
-<title>Collaborative Editor Over WebSocket</title>
-<meta name="google" content="notranslate">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<style>
-html {
-    height: 100%;
-}
-* {
-    margin: 0;
-    padding: 0;
-}
-body {
-    font-family: "Georgia", "Arial", "Serif";
-    width: 100%;
-    position: relative;
-    min-height: 100%;
-    box-sizing: border-box;
-    height: 100%;
-    background-color: #222;
-    color: #999;
-}
-a, a:hover {
-    color: inherit;
-    text-decoration: none;
-}
-a.button {
-    padding: 0.5em 1em;
-    background-color: #333;
-    margin-left: 2em;
-}
-h2.title {
-    display: block;
-    width: 100%;
-    padding: 0.5em 0.5em 0.5em 1em;
-    background-color: #333;
-    font-size: 1.5em;
-    font-weight: normal;
-    box-sizing: border-box;
-}
-.editor, .preview {
-    height: 100%;
-    width: 100%;
-    position: relative;
-}
-.editor {
-    padding-bottom: 4em;
-}
-.editor textarea#editor {
-    height: 100%;
-    width: 100%;
-    padding: 0.5em;
-    box-sizing: border-box;
-    font-size: 1.1em;
-    color: inherit;
-    background-color: inherit;
-    font-family: monospace;
-    border: none;
-}
-.preview #preview {
-    height: 100%;
-    width: 100%;
-    border: none;
-    background-color: #fff;
-}
-@media screen and (min-width: 720px) {
-    .editor {
-        width: 50%;
-        float: left;
-        padding-bottom: 0;
-    }
-    .preview {
-        width: 50%;
-        float: left;
-    }
-}
-</style>
-</head>
-<body>
-<div class="editor">
-    <h2 class="title">Editor</h2>
-    <textarea id="editor"></textarea>
-</div>
-<div class="preview">
-    <h2 class="title">Preview</h2>
-    <iframe id="preview"></iframe>
-</div>
-</body>
-<script>
-var lastCursorPosition = 0;
-var editor = document.getElementById('editor');
-var preview = document.getElementById('preview');
-var timeoutTyping = null;
-var hostname = window.location.hostname;
-var port = 9191;
-var ws = new WebSocket('ws://' + hostname + ':' + port);
-var remoteContent = '';
-var isTyping = false;
-var dataHasComeWhileYouTyping = false;
-
-function updatePreview(content)
-{
-    preview.contentWindow.document.open();
-    preview.contentWindow.document.write(content);
-    preview.contentWindow.document.close();
-}
-ws.onmessage = function(e) {
-    if (isTyping) {
-        dataHasComeWhileYouTyping = true;
-        remoteContent = e.data;
-        return;
-    }
-
-    editor.value = e.data;
-    remoteContent = e.data;
-    editor.setSelectionRange(lastCursorPosition, lastCursorPosition)
-    updatePreview(e.data);
-};
-editor.onkeyup = function(e) {
-    isTyping = true;
-    clearTimeout(timeoutTyping);
-
-    timeoutTyping = setTimeout(function() {
-        lastCursorPosition = editor.selectionEnd;
-        isTyping = false;
-
-        if (dataHasComeWhileYouTyping) {
-            editor.value = remoteContent;
-            dataHasComeWhileYouTyping = false;
-        }
-        updatePreview(editor.value);
-        ws.send(editor.value);
-    }, 800);
-};
-</script>
+<!DOCTYPE html>
+<html lang="">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title><%= htmlWebpackPlugin.options.title %></title>
+  </head>
+  <body>
+    <noscript>
+      <strong>We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
+    </noscript>
+    <div id="app"></div>
+    <!-- built files will be auto injected -->
+  </body>
 </html>

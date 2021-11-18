@@ -1,10 +1,10 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "bba94379c463d945a27bf4a59387603f",
+    "content-hash": "ef6bacef95af48d5868fe387bc8cadf9",
     "packages": [
         {
             "name": "cboden/ratchet",
@@ -482,25 +482,25 @@
         },
         {
             "name": "react/promise-timer",
-            "version": "v1.5.0",
+            "version": "v1.6.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/reactphp/promise-timer.git",
-                "reference": "a11206938ca2394dc7bb368f5da25cd4533fa603"
+                "reference": "daee9baf6ef30c43ea4c86399f828bb5f558f6e6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/reactphp/promise-timer/zipball/a11206938ca2394dc7bb368f5da25cd4533fa603",
-                "reference": "a11206938ca2394dc7bb368f5da25cd4533fa603",
+                "url": "https://api.github.com/repos/reactphp/promise-timer/zipball/daee9baf6ef30c43ea4c86399f828bb5f558f6e6",
+                "reference": "daee9baf6ef30c43ea4c86399f828bb5f558f6e6",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3",
                 "react/event-loop": "^1.0 || ^0.5 || ^0.4 || ^0.3.5",
-                "react/promise": "^2.7.0 || ^1.2.1"
+                "react/promise": "^3.0 || ^2.7.0 || ^1.2.1"
             },
             "require-dev": {
-                "phpunit/phpunit": "^6.4 || ^5.7 || ^4.8.35"
+                "phpunit/phpunit": "^9.0 || ^5.7 || ^4.8.35"
             },
             "type": "library",
             "autoload": {
@@ -508,7 +508,7 @@
                     "React\\Promise\\Timer\\": "src/"
                 },
                 "files": [
-                    "src/functions.php"
+                    "src/functions_include.php"
                 ]
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -531,7 +531,7 @@
                 "timeout",
                 "timer"
             ],
-            "time": "2018-06-13T16:45:37+00:00"
+            "time": "2020-07-10T12:18:06+00:00"
         },
         {
             "name": "react/socket",

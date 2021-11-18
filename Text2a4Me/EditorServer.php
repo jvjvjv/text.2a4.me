@@ -6,7 +6,7 @@
  * @link https://github.com/rioastamal-examples/collaborative-editor-websocket-php
  * @license MIT
  */
-namespace MyApp;
+namespace Text2a4Me;
 
 use Ratchet\MessageComponentInterface;
 use Ratchet\ConnectionInterface;

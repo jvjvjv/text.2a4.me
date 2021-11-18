@@ -1,51 +1,49 @@
-# About
+# Text.2a4.me
 
-This repository are intended for learning purpose only. A simple collaborative
-editor over WebSocket using Ratchet PHP library. It features very simple editor
-and preview window for previewing HTML content.
-
-![Demo Collaborative Editor WebSocket PHP](https://s3.amazonaws.com/rioastamal-assets/collaborative-editor-websocket-php/collaborative-editor-websocket.mov.gif)
+This project was cloned from [Collaborative Editor Websocket PHP](https://github.com/rioastamal-examples/collaborative-editor-websocket-php) and turned into this robust piece of software.
 
 # Installation
 
 Clone this project repository.
 
 ```
-$ git clone https://github.com/rioastamal-examples/collaborative-editor-websocket-php
+$ git clone https://github.com/jvjvjv/text-2a4-me
 ```
 
-Next is to install all dependencies required by chat server using Composer.
+Install all dependencies.
 
 ```
-$ cd collaborative-editor-websocket-php
+$ cd text-2a4-me
 $ composer install -vvv
+$ npm install
 ```
 
-# Running the App
+# Building the app
 
-We need to start two server first is the web socket server and second is normal
-web server. To start web socket server you can execute a script on
-./bin directory.
+The app uses the Vue CLI to build
+
+```
+npm run build
+```
+
+# Running the app
+
+The first part of the application is the web socket server.
 
 ```
 $ php ./bin/editor-server.php
-Websocket Editor server running on 0.0.0.0:9191.
---
+Websocket Editor server running on 0.0.0.0:8080.
 ```
+
+The second part of the application is the VueJS editor.
 
 Now open another terminal and start web server using PHP built-in web server.
 The document root should be `public/` directory.
 
 ```
-$ php -S 0.0.0.0:9190 -t public/
+$ php -S 0.0.0.0:8081 -t public/
 PHP 7.1.25 Development Server started at Wed Jan  9 06:10:13 2019
-Listening on http://0.0.0.0:9190
+Listening on http://0.0.0.0:8081
 Document root is /path/to/collaborative-editor-websocket-php/public
 Press Ctrl-C to quit.
 ```
-
-On example above by default the web server is running on port 9190 and web socket server on port 9191. Here's step to test.
-
-1. Open your browser and navigate to [http://localhost:9190/](http://localhost:9190/). 
-2. Open another tab or browser window and navigate to the same address.
-3. Start typing on Editor box, the code should be appear on another window.

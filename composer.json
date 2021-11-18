@@ -10,10 +10,11 @@
     ],
     "autoload": {
         "psr-4": {
-            "MyApp\\": "src"
+            "Text2a4Me\\": "Text2a4Me"
         }
     },
     "require": {
-        "cboden/ratchet": "^0.4.1"
+        "cboden/ratchet": "^0.4.1",
+        "react/promise-timer": "^1.6"
     }
 }
