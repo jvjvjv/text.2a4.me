@@ -55,7 +55,8 @@ export default defineComponent({
     },
 
     initializeWebsocket() {
-      this.ws = new WebSocket("ws://" + this.hostname + ":" + this.port);
+      const wsProtocol = window.location.protocol.startsWith('https') ? 'wss' : 'ws';
+      this.ws = new WebSocket(`${wsProtocol}://${this.hostname}:${this.port}`);
       this.ws.onerror = () =>
         alert(
           `Websocket is currently unavailable. Work will not be synchronized.`
