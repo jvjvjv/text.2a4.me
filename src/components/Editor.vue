@@ -1,9 +1,16 @@
 <template>
   <prism-editor
+    ref="editor"
     v-model="code"
     :highlight="highlighter"
     line-numbers
     class="editor"
+    @click="doFocusEditorTextArea"
+    @keydown="doCopyPasteValidation"
+  />
+  <message-area
+    :value="remoteContent"
+    class="messaging"
   />
 </template>
 
@@ -11,6 +18,7 @@
 import { defineComponent } from "vue";
 import { PrismEditor } from "vue-prism-editor";
 import "vue-prism-editor/dist/prismeditor.min.css";
+import MessageArea from "./MessageArea.vue";
 
 // import highlighting library (you can use any library you want just return html string)
 import { highlight, languages } from "prismjs/components/prism-core";
@@ -21,15 +29,16 @@ import "prismjs/themes/prism-tomorrow.css"; // import syntax highlighting styles
 export default defineComponent({
   components: {
     PrismEditor,
+    MessageArea,
   },
   data: () => ({
     code: "",
     lastCursorPosition: 0,
     timeoutTyping: null,
     hostname: window.location.hostname,
-    port: 8080,
+    port: process.env.VUE_APP_WEBSOCKET_PORT,
     ws: null,
-    remoteContent: "",
+    remoteContent: null,
     isTyping: false,
     dataHasComeWhileYouTyping: false,
   }),
@@ -39,23 +48,11 @@ export default defineComponent({
   created() {
     this.initializeWebsocket();
   },
-  mounted() {
-    this.initializeKeyListeners();
-  },
-  beforeUnmount() {
-    this.removeKeyListeners();
-  },
   methods: {
-    initializeKeyListeners() {
-      this.$el.addEventListener("keydown", this.doCopyPasteValidation);
-    },
-
-    removeKeyListeners() {
-      this.$el.removeEventListener("keydown", this.doCopyPasteValidation);
-    },
-
     initializeWebsocket() {
-      const wsProtocol = window.location.protocol.startsWith('https') ? 'wss' : 'ws';
+      const wsProtocol = window.location.protocol.startsWith("https")
+        ? "wss"
+        : "ws";
       this.ws = new WebSocket(`${wsProtocol}://${this.hostname}:${this.port}`);
       this.ws.onerror = () =>
         alert(
@@ -68,23 +65,33 @@ export default defineComponent({
       return highlight(code, languages.js); // languages.<insert language> to return html with markup
     },
 
-    doReceiveSync(event) {
-      const data = JSON.parse(event.data);
-      if (this.isTyping) {
-        this.dataHasComeWhileYouTyping = true;
-        // this.remoteContent = e.data;
+    doReceiveSync({ data }) {
+      try {
+        data = JSON.parse(data);
+        if (this.isTyping) {
+          this.dataHasComeWhileYouTyping = true;
+          return;
+        }
+
+        switch (data.action) {
+          case "code":
+            this.code = data.message;
+            break;
+          case "paste":
+          case "copy":
+          case "cut":
+          case "select-all":
+            console.log(`${new Date().toLocaleString()}: ${data.action} from ${data.from} (${data.from_ip})`);
+            break;
+        }
+        this.remoteContent = data;
+      } catch (error) {
         return;
       }
+    },
 
-      switch (data.action) {
-        case 'code':
-          this.code = data.message;
-          break;
-        case 'action':
-          console.log(`${data.message}, ${new Date().toISOString()}`);
-          break;
-      }
-      this.remoteContent = data;
+    doFocusEditorTextArea() {
+      this.$refs.editor.$el.querySelector('textarea').focus();
     },
 
     doSyncCode() {
@@ -99,42 +106,49 @@ export default defineComponent({
           // this.code = this.remoteContent;
           this.dataHasComeWhileYouTyping = false;
         }
-        this.ws.send(
-          JSON.stringify({
-            action: "code",
-            message: this.code,
-          })
-        );
-      }, 128);
+        const data = {
+          action: "code",
+          message: this.code,
+        };
+        this.ws.send(JSON.stringify(data));
+        this.remoteContent = data;
+      }, 400);
     },
 
     doCopyPasteValidation(e) {
       const { key, ctrlKey, metaKey } = e;
       let action;
       let message;
+      e.stopPropagation();
 
       if (ctrlKey || metaKey) {
         switch (key) {
+          case "a":
+            action = "select-all";
+            message = this.code;
+            break;
           case "v":
-            action = "action";
-            message = "paste";
+            action = "paste";
+            message = this.code;
             break;
           case "x":
-            action = "action";
-            message = "cut";
+            action = "cut";
+            message = this.code;
             break;
           case "c":
-            action = "action";
-            message = "copy";
+            action = "copy";
+            message = this.code;
             break;
         }
         if (action && message) {
+          const data = {
+            action,
+            message,
+          };
           this.ws.send(
-            JSON.stringify({
-              action,
-              message,
-            })
+            JSON.stringify(data)
           );
+          this.remoteContent = data;
         }
       }
     },
@@ -150,6 +164,12 @@ export default defineComponent({
   font-family: monospace;
   font-size: 14pt;
 
-  padding-bottom: 4em;
+  padding-bottom: 0em;
+}
+.messaging {
+  height: 4em;
+  padding: 5px;
+  background-color: rgb(0,0,0);
+  color: rgb(240,240,240)
 }
 </style>

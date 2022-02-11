@@ -8,12 +8,14 @@ require __DIR__ . '/../vendor/autoload.php';
 use Ratchet\Server\IoServer;
 use Ratchet\Http\HttpServer;
 use Ratchet\WebSocket\WsServer;
-
+use Symfony\Component\Dotenv\Dotenv;
 
 $loop = React\EventLoop\Factory::create();
+$dotenv = new Dotenv();
+$dotenv->load(__DIR__.'/../.env');
 
-$port = isset($_SERVER['CHAT_SERVER_PORT']) ? $_SERVER['CHAT_SERVER_PORT'] : 8080;
-$bindAddr = isset($_SERVER['CHAT_BIND_ADDR']) ? $_SERVER['CHAT_BIND_ADDR'] : '0.0.0.0';
+$port = $_SERVER['CHAT_SERVER_PORT'] ?? 3479;
+$bindAddr = $_SERVER['CHAT_BIND_ADDR'] ?? '0.0.0.0';
 $file = __DIR__ .'/sock.tmp';
 
 $server = IoServer::factory(

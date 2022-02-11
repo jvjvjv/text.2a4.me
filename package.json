@@ -3,8 +3,9 @@
   "version": "2.0.0",
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service serve --port 5000",
+    "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
+    "websocket": "php ./bin/editor-server.php",
     "test:unit": "vue-cli-service test:unit",
     "test:e2e": "vue-cli-service test:e2e",
     "lint": "vue-cli-service lint"
